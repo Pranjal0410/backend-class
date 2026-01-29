@@ -31,9 +31,10 @@ const UPDATE_COLORS = {
 export function AuditTimeline({ updates }) {
   if (!updates || updates.length === 0) {
     return (
-      <p className="text-gray-500 italic text-center py-4">
-        No timeline events yet
-      </p>
+      <div className="text-gray-500 text-sm bg-gray-50 p-6 rounded-lg border border-dashed border-gray-300 text-center">
+        <p className="font-medium text-gray-600 mb-1">No timeline events yet</p>
+        <p className="text-gray-400">All status changes, notes, and assignments will appear here.</p>
+      </div>
     );
   }
 

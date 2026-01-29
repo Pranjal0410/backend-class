@@ -5,12 +5,13 @@
  * - Viewers see read-only badge
  * - Responders/Admins see dropdown
  * - Shows focus presence indicators
+ * - Inline confirmation on status change
  *
  * GRACEFUL DEGRADATION:
  * Viewers see a styled badge with the current status.
  * This is better than a disabled dropdown (less confusing).
  */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuthStore } from '../stores';
 import { useFocus } from '../hooks';
 import { updateStatus } from '../services/socket';
@@ -26,13 +27,24 @@ const STATUSES = [
 export function StatusSelector({ incidentId, currentStatus }) {
   const canWrite = useAuthStore((state) => state.canWrite());
   const [isOpen, setIsOpen] = useState(false);
+  const [confirmation, setConfirmation] = useState(null);
   const { onFocus, onBlur, focusedUsers } = useFocus(incidentId, 'status');
 
   const currentStatusObj = STATUSES.find((s) => s.value === currentStatus) || STATUSES[0];
 
+  // Show confirmation when status changes
+  useEffect(() => {
+    if (confirmation) {
+      const timer = setTimeout(() => setConfirmation(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [confirmation]);
+
   const handleStatusChange = (newStatus) => {
     if (newStatus !== currentStatus) {
       updateStatus(incidentId, newStatus);
+      const newStatusObj = STATUSES.find(s => s.value === newStatus);
+      setConfirmation(`Status updated to ${newStatusObj?.label}`);
     }
     setIsOpen(false);
     onBlur();
@@ -119,6 +131,16 @@ export function StatusSelector({ incidentId, currentStatus }) {
               {status.value === currentStatus && ' ✓'}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* Inline confirmation */}
+      {confirmation && (
+        <div className="absolute top-full left-0 mt-2 flex items-center gap-1 text-sm text-green-600 animate-fade-in">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          {confirmation}
         </div>
       )}
     </div>

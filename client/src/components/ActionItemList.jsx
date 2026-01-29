@@ -62,7 +62,10 @@ export function ActionItemList({ incidentId }) {
       {/* Action items list */}
       <ul className="space-y-2 mb-4">
         {actionItems.length === 0 ? (
-          <li className="text-gray-500 italic">No action items yet</li>
+          <li className="text-gray-500 text-sm bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300">
+            <p className="font-medium text-gray-600 mb-1">No action items defined</p>
+            <p className="text-gray-400">Create tasks to track remediation steps and follow-ups.</p>
+          </li>
         ) : (
           actionItems.map((item) => (
             <li

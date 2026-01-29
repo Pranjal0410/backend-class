@@ -195,7 +195,10 @@ export function IncidentDetailPage() {
                   </div>
                 ))}
               {updates.filter((u) => u.type === 'note').length === 0 && (
-                <p className="text-gray-500 italic">No notes yet</p>
+                <div className="text-gray-500 text-sm bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300">
+                  <p className="font-medium text-gray-600 mb-1">No findings recorded yet</p>
+                  <p className="text-gray-400">Add observations, logs, or hypotheses during investigation.</p>
+                </div>
               )}
             </div>
           </div>
