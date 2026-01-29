@@ -23,19 +23,22 @@ export function AssignResponder({ incidentId, currentAssignees = [] }) {
   // Check if current user can assign (admin only)
   const canAssign = user && canPerformAction(user.role, 'incident.assign');
 
-  // Fetch available responders on mount
+  // Fetch available users on mount (responders and admins can be assigned)
   useEffect(() => {
-    const fetchResponders = async () => {
+    const fetchUsers = async () => {
       try {
-        const { users } = await userApi.list({ role: 'responder' });
-        setResponders(users);
+        // Fetch all users, not just responders
+        const { users } = await userApi.list({});
+        // Filter to only show responders and admins (not viewers)
+        const assignableUsers = users.filter(u => u.role === 'responder' || u.role === 'admin');
+        setResponders(assignableUsers);
       } catch (error) {
-        console.error('Failed to fetch responders:', error);
+        console.error('Failed to fetch users:', error);
       }
     };
 
     if (canAssign) {
-      fetchResponders();
+      fetchUsers();
     }
   }, [canAssign]);
 
