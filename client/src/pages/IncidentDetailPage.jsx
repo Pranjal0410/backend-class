@@ -30,7 +30,9 @@ import {
   StatusSelector,
   NoteInput,
   ActionItemList,
-  RoleBadge
+  RoleBadge,
+  AssignResponder,
+  IncidentMetaStrip
 } from '../components';
 import { AuditTimeline } from '../components/AuditTimeline';
 import { ConnectionStatus } from '../components/ConnectionStatus';
@@ -117,6 +119,9 @@ export function IncidentDetailPage() {
           <PresenceIndicator incidentId={id} />
         </div>
       </div>
+
+      {/* Incident Meta Strip */}
+      <IncidentMetaStrip incident={incident} updates={updates} />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-6">
@@ -215,12 +220,16 @@ export function IncidentDetailPage() {
                     {assignee.name?.charAt(0) || '?'}
                   </div>
                   <span className="text-sm">{assignee.name}</span>
+                  <span className="text-xs text-gray-400">Working</span>
                 </div>
               ))}
             </div>
           ) : (
             <p className="text-gray-500 italic">No responders assigned</p>
           )}
+
+          {/* Admin-only assignment control */}
+          <AssignResponder incidentId={id} currentAssignees={incident.assignees || []} />
         </div>
 
         {/* Audit Timeline */}

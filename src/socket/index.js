@@ -603,13 +603,16 @@ const handleAddNote = async (socket, { incidentId, text }) => {
 /**
  * Handle user assignment request
  *
+ * RBAC: Only admins can assign responders.
+ * This is a coordination privilege, not a general write permission.
+ *
  * Idempotency: If user is already assigned, the service throws
  * "User already assigned" - this prevents duplicate audit records.
  */
 const handleAssignment = async (socket, { incidentId, targetUserId }) => {
-  // 1. Authorize
-  if (!canWrite(socket.user)) {
-    throw new Error('Insufficient permissions');
+  // 1. Authorize - ADMIN ONLY (not just canWrite)
+  if (socket.user.role !== 'admin') {
+    throw new Error('Only administrators can assign responders');
   }
 
   // 2. Validate input

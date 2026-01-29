@@ -35,7 +35,7 @@ export const canPerformAction = (role, action) => {
     'incident.create': ['admin', 'responder'],
     'incident.update': ['admin', 'responder'],
     'incident.delete': ['admin'],
-    'incident.assign': ['admin', 'responder'],
+    'incident.assign': ['admin'], // Only admins can assign - coordination privilege
     'incident.note': ['admin', 'responder'],
     'incident.action_item': ['admin', 'responder'],
     'user.manage': ['admin']

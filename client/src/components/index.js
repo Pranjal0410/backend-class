@@ -10,6 +10,8 @@ export { RoleBadge } from './RoleBadge';
 export { StatusSelector } from './StatusSelector';
 export { NoteInput } from './NoteInput';
 export { ActionItemList } from './ActionItemList';
+export { AssignResponder } from './AssignResponder';
+export { IncidentMetaStrip } from './IncidentMetaStrip';
 
 // Presence & Focus components
 export { PresenceIndicator } from './PresenceIndicator';
