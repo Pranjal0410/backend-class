@@ -67,7 +67,7 @@ export function NoteInput({ incidentId }) {
           onChange={(e) => setText(e.target.value)}
           onFocus={onFocus}
           onBlur={onBlur}
-          placeholder="Add an investigation note..."
+          placeholder="Add observations, logs, or findings..."
           className="w-full p-3 rounded resize-none focus:outline-none"
           rows={3}
           maxLength={2000}

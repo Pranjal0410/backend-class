@@ -28,11 +28,14 @@ import { useIncidentRoom } from '../hooks';
 import {
   PresenceIndicator,
   StatusSelector,
+  StatusProgression,
   NoteInput,
   ActionItemList,
   RoleBadge,
   AssignResponder,
-  IncidentMetaStrip
+  IncidentMetaStrip,
+  ReadOnlyBanner,
+  CopyIncidentSummary
 } from '../components';
 import { AuditTimeline } from '../components/AuditTimeline';
 import { ConnectionStatus } from '../components/ConnectionStatus';
@@ -103,6 +106,7 @@ export function IncidentDetailPage() {
                 ← Back
               </button>
               <h1 className="text-xl font-bold">{incident.title}</h1>
+              <CopyIncidentSummary incident={incident} updates={updates} />
             </div>
             <div className="flex items-center gap-4">
               <ConnectionStatus />
@@ -112,6 +116,9 @@ export function IncidentDetailPage() {
           </div>
         </div>
       </header>
+
+      {/* Read-only banner for viewers */}
+      <ReadOnlyBanner />
 
       {/* Presence Bar */}
       <div className="bg-white border-b">
@@ -134,6 +141,9 @@ export function IncidentDetailPage() {
                 Status
               </label>
               <StatusSelector incidentId={id} currentStatus={incident.status} />
+              <div className="mt-3">
+                <StatusProgression currentStatus={incident.status} />
+              </div>
             </div>
 
             {/* Severity */}
@@ -155,12 +165,22 @@ export function IncidentDetailPage() {
                 Commander
               </label>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
-                  {incident.commander?.name?.charAt(0) || '?'}
+                <div className="relative">
+                  <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
+                    {incident.commander?.name?.charAt(0) || '?'}
+                  </div>
+                  {incident.commander && (
+                    <span className="absolute -top-1 -right-1 text-xs" title="Incident Commander">⭐</span>
+                  )}
                 </div>
-                <span className="font-medium">
-                  {incident.commander?.name || 'Unassigned'}
-                </span>
+                <div>
+                  <span className="font-medium">
+                    {incident.commander?.name || 'Unassigned'}
+                  </span>
+                  {incident.commander && (
+                    <span className="text-xs text-gray-400 ml-2">Commander</span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -228,7 +248,10 @@ export function IncidentDetailPage() {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 italic">No responders assigned</p>
+            <div className="text-gray-500 text-sm bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300">
+              <p className="font-medium text-gray-600 mb-1">No responders assigned</p>
+              <p className="text-gray-400">Assign team members to coordinate incident response.</p>
+            </div>
           )}
 
           {/* Admin-only assignment control */}

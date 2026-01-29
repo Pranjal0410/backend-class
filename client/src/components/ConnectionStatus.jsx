@@ -1,6 +1,6 @@
 /**
  * ConnectionStatus Component
- * Shows socket connection state
+ * Shows socket connection state with tooltips
  *
  * Displays:
  * - Connected: green dot
@@ -21,7 +21,10 @@ export function ConnectionStatus() {
 
   if (isConnected) {
     return (
-      <div className="flex items-center gap-2 text-sm">
+      <div
+        className="flex items-center gap-2 text-sm cursor-default"
+        title="Real-time updates are active"
+      >
         <div className="w-2 h-2 rounded-full bg-green-500" />
         <span className="text-green-700">Connected</span>
       </div>
@@ -30,7 +33,10 @@ export function ConnectionStatus() {
 
   if (isConnecting) {
     return (
-      <div className="flex items-center gap-2 text-sm">
+      <div
+        className="flex items-center gap-2 text-sm cursor-default"
+        title="Establishing connection to server..."
+      >
         <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
         <span className="text-yellow-700">Connecting...</span>
       </div>
@@ -38,8 +44,11 @@ export function ConnectionStatus() {
   }
 
   return (
-    <div className="flex items-center gap-2 text-sm">
-      <div className="w-2 h-2 rounded-full bg-red-500" />
+    <div
+      className="flex items-center gap-2 text-sm cursor-default"
+      title="Waiting for server connection. Some features may be unavailable."
+    >
+      <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
       <span className="text-red-700">{error || 'Disconnected'}</span>
     </div>
   );

@@ -28,7 +28,7 @@ const UPDATE_COLORS = {
   action_item: '#F59E0B'    // amber
 };
 
-export function AuditTimeline({ updates }) {
+export function AuditTimeline({ updates, grouped = false }) {
   if (!updates || updates.length === 0) {
     return (
       <div className="text-gray-500 text-sm bg-gray-50 p-6 rounded-lg border border-dashed border-gray-300 text-center">
@@ -42,6 +42,51 @@ export function AuditTimeline({ updates }) {
   const sortedUpdates = [...updates].sort(
     (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
   );
+
+  // Group by type if requested
+  if (grouped) {
+    const groupedByType = sortedUpdates.reduce((acc, update) => {
+      const type = update.type;
+      if (!acc[type]) acc[type] = [];
+      acc[type].push(update);
+      return acc;
+    }, {});
+
+    const typeLabels = {
+      status_change: 'Status Changes',
+      note: 'Notes',
+      assignment: 'Assignments',
+      action_item: 'Action Items'
+    };
+
+    const typeOrder = ['status_change', 'note', 'assignment', 'action_item'];
+
+    return (
+      <div className="audit-timeline">
+        {typeOrder.map(type => {
+          const typeUpdates = groupedByType[type];
+          if (!typeUpdates || typeUpdates.length === 0) return null;
+
+          return (
+            <div key={type} className="mb-6">
+              <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <span
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: UPDATE_COLORS[type] }}
+                />
+                {typeLabels[type]} ({typeUpdates.length})
+              </h4>
+              <div className="space-y-4">
+                {typeUpdates.map((update, index) => (
+                  <TimelineEntry key={update._id || index} update={update} compact />
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <div className="audit-timeline">
@@ -57,7 +102,7 @@ export function AuditTimeline({ updates }) {
 /**
  * Individual timeline entry
  */
-function TimelineEntry({ update }) {
+function TimelineEntry({ update, compact = false }) {
   const icon = UPDATE_ICONS[update.type] || '•';
   const color = UPDATE_COLORS[update.type] || '#6B7280';
   const time = new Date(update.createdAt).toLocaleTimeString([], {
@@ -68,6 +113,20 @@ function TimelineEntry({ update }) {
   const userName = update.userId?.name || 'Unknown';
 
   const message = formatUpdateMessage(update);
+
+  // Compact mode for grouped view
+  if (compact) {
+    return (
+      <div className="flex items-start gap-3 text-sm">
+        <div className="text-gray-400 w-16 flex-shrink-0">{time}</div>
+        <div className="flex-1">
+          <span className="font-medium text-gray-700">{userName}</span>
+          <span className="text-gray-500 mx-1">—</span>
+          <span className="text-gray-600">{message}</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex gap-4">
