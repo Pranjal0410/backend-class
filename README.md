@@ -107,19 +107,6 @@ npm run dev
 | Responder | Create, modify incidents |
 | Viewer | Read-only |
 
-## Interview-Ready Explanations
-
-### Why Zustand?
-> "Minimal boilerplate, no provider wrapper, easy to call from both components and socket callbacks."
-
-### Why Server-Authoritative?
-> "Eliminates conflict resolution complexity. Clients request changes, server validates and broadcasts."
-
-### Why Not CRDTs?
-> "Overkill for structured updates. Our updates are discrete events, not concurrent character-by-character edits."
-
-### Why Separate Presence from Focus?
-> "Different update frequencies and data shapes. Presence is persistent, focus is ephemeral."
 
 ## Deployment
 
