@@ -129,7 +129,7 @@ npm run dev
 | presence:joined | Server → Room | User joined |
 | focus:updated | Server → Room | User focused on section |
 
-## Roles
+## Roles 
 
 | Role | Permissions |
 |------|-------------|
@@ -173,6 +173,4 @@ Current architecture handles ~50 concurrent users per incident. For scale:
 3. **Rate limiting** with express-rate-limit
 4. **Sticky sessions** for WebSocket affinity
 
-## License
 
-MIT
