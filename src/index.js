@@ -35,6 +35,20 @@ const server = http.createServer(app);
 app.use(cors(config.cors));
 app.use(express.json());
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    name: 'Incident Response Platform API',
+    status: 'running',
+    endpoints: {
+      health: '/health',
+      auth: '/api/auth',
+      incidents: '/api/incidents',
+      users: '/api/users'
+    }
+  });
+});
+
 // Health check route
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
