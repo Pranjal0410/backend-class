@@ -2,6 +2,12 @@
  * Component Exports
  */
 
+// Layout components
+export { AppLayout, Sidebar, TopBar } from './layout';
+
+// Dashboard components
+export { StatCard, IncidentTrendChart, SeverityDistribution } from './dashboard';
+
 // Role-aware components
 export { RoleGate, WriteGate, AdminGate } from './RoleGate';
 export { RoleBadge } from './RoleBadge';

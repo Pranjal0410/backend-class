@@ -1,9 +1,6 @@
 /**
  * CopyIncidentSummary Component
- * Generates and copies a text summary of the incident
- *
- * Shows empathy for real workflows - engineers often need
- * to share incident status in Slack, email, or other tools.
+ * Generates and copies a text summary of the incident - Dark theme
  */
 import { useState } from 'react';
 
@@ -50,15 +47,15 @@ export function CopyIncidentSummary({ incident, updates = [] }) {
   return (
     <button
       onClick={handleCopy}
-      className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+      className="btn btn--ghost"
       title="Copy incident summary to clipboard"
     >
       {copied ? (
         <>
-          <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
-          <span className="text-green-600">Copied!</span>
+          <span className="text-green-500">Copied!</span>
         </>
       ) : (
         <>

@@ -1,16 +1,6 @@
 /**
  * ConnectionStatus Component
- * Shows socket connection state with tooltips
- *
- * Displays:
- * - Connected: green dot
- * - Connecting: yellow dot + "Connecting..."
- * - Disconnected: red dot + "Disconnected"
- *
- * WHY SHOW THIS:
- * - Users need to know if their actions will work
- * - Disconnected state explains why updates aren't appearing
- * - Reinforces the real-time nature of the system
+ * Shows socket connection state with tooltips - Dark theme
  */
 import { useSocketStore } from '../stores';
 
@@ -26,7 +16,7 @@ export function ConnectionStatus() {
         title="Real-time updates are active"
       >
         <div className="w-2 h-2 rounded-full bg-green-500" />
-        <span className="text-green-700">Connected</span>
+        <span className="text-green-500">Connected</span>
       </div>
     );
   }
@@ -38,7 +28,7 @@ export function ConnectionStatus() {
         title="Establishing connection to server..."
       >
         <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
-        <span className="text-yellow-700">Connecting...</span>
+        <span className="text-yellow-500">Connecting...</span>
       </div>
     );
   }
@@ -49,7 +39,7 @@ export function ConnectionStatus() {
       title="Waiting for server connection. Some features may be unavailable."
     >
       <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-      <span className="text-red-700">{error || 'Disconnected'}</span>
+      <span className="text-red-500">{error || 'Disconnected'}</span>
     </div>
   );
 }

@@ -1,15 +1,6 @@
 /**
  * StatusSelector Component
- * Role-aware status update control
- *
- * - Viewers see read-only badge
- * - Responders/Admins see dropdown
- * - Shows focus presence indicators
- * - Inline confirmation on status change
- *
- * GRACEFUL DEGRADATION:
- * Viewers see a styled badge with the current status.
- * This is better than a disabled dropdown (less confusing).
+ * Role-aware status update control - Dark theme
  */
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../stores';
@@ -50,26 +41,25 @@ export function StatusSelector({ incidentId, currentStatus }) {
     onBlur();
   };
 
-  // ─────────────────────────────────────────
   // VIEWER: Read-only badge
-  // ─────────────────────────────────────────
   if (!canWrite) {
     return (
-      <div className="status-badge-readonly">
+      <div className="status-badge-readonly flex items-center gap-2">
         <span
-          className="status-badge"
-          style={{ backgroundColor: currentStatusObj.color }}
+          className="badge"
+          style={{
+            backgroundColor: `${currentStatusObj.color}20`,
+            color: currentStatusObj.color
+          }}
         >
           {currentStatusObj.label}
         </span>
-        <span className="text-xs text-gray-500 ml-2">(read only)</span>
+        <span className="text-xs text-muted">(read only)</span>
       </div>
     );
   }
 
-  // ─────────────────────────────────────────
   // RESPONDER/ADMIN: Interactive dropdown
-  // ─────────────────────────────────────────
   return (
     <div className="status-selector relative">
       {/* Focus presence indicators */}
@@ -94,8 +84,7 @@ export function StatusSelector({ incidentId, currentStatus }) {
         }}
         onBlur={onBlur}
         className={clsx(
-          'status-button px-4 py-2 rounded flex items-center gap-2',
-          'border-2 transition-colors',
+          'btn btn--secondary flex items-center gap-2',
           focusedUsers.length > 0 && 'ring-2'
         )}
         style={{
@@ -108,11 +97,13 @@ export function StatusSelector({ incidentId, currentStatus }) {
           style={{ backgroundColor: currentStatusObj.color }}
         />
         {currentStatusObj.label}
-        <span className="ml-2">▼</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
 
       {isOpen && (
-        <div className="status-dropdown absolute top-full left-0 mt-1 bg-white border rounded shadow-lg z-10">
+        <div className="absolute top-full left-0 mt-1 bg-secondary border rounded-lg shadow-lg z-10 min-w-[12rem]">
           {STATUSES.map((status) => (
             <button
               key={status.value}
@@ -120,7 +111,8 @@ export function StatusSelector({ incidentId, currentStatus }) {
               disabled={status.value === currentStatus}
               className={clsx(
                 'w-full px-4 py-2 text-left flex items-center gap-2',
-                'hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed'
+                'hover:bg-tertiary disabled:opacity-50 disabled:cursor-not-allowed',
+                'text-primary transition-colors'
               )}
             >
               <span
@@ -128,7 +120,11 @@ export function StatusSelector({ incidentId, currentStatus }) {
                 style={{ backgroundColor: status.color }}
               />
               {status.label}
-              {status.value === currentStatus && ' ✓'}
+              {status.value === currentStatus && (
+                <svg className="ml-auto w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
             </button>
           ))}
         </div>
@@ -136,7 +132,7 @@ export function StatusSelector({ incidentId, currentStatus }) {
 
       {/* Inline confirmation */}
       {confirmation && (
-        <div className="absolute top-full left-0 mt-2 flex items-center gap-1 text-sm text-green-600 animate-fade-in">
+        <div className="absolute top-full left-0 mt-2 flex items-center gap-1 text-sm text-green-500 animate-fade-in">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>

@@ -1,9 +1,6 @@
 /**
  * StatusProgression Component
- * Visual representation of incident status state machine
- *
- * Shows: Investigating → Identified → Monitoring → Resolved
- * Highlights current step - demonstrates state machine visually
+ * Visual representation of incident status state machine - Dark theme
  */
 
 const STATUSES = [
@@ -32,11 +29,11 @@ export function StatusProgression({ currentStatus }) {
                   ? 'text-white shadow-sm'
                   : isPast
                     ? 'text-white opacity-60'
-                    : 'bg-gray-100 text-gray-400'
+                    : 'text-muted'
                 }
               `}
               style={{
-                backgroundColor: isCurrent || isPast ? status.color : undefined
+                backgroundColor: isCurrent || isPast ? status.color : 'var(--bg-tertiary)'
               }}
             >
               {status.label}
@@ -45,7 +42,8 @@ export function StatusProgression({ currentStatus }) {
             {/* Arrow connector */}
             {index < STATUSES.length - 1 && (
               <svg
-                className={`w-4 h-4 mx-1 ${index < currentIndex ? 'text-gray-400' : 'text-gray-300'}`}
+                className={`w-4 h-4 mx-1 ${index < currentIndex ? 'text-muted' : 'text-muted'}`}
+                style={{ opacity: index < currentIndex ? 0.6 : 0.3 }}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

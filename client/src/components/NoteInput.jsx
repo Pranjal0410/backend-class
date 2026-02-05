@@ -1,10 +1,6 @@
 /**
  * NoteInput Component
- * Role-aware note input control
- *
- * GRACEFUL DEGRADATION:
- * - Viewers see no input at all (just the timeline)
- * - Responders/Admins see full input with submit button
+ * Role-aware note input control - Dark theme
  */
 import { useState } from 'react';
 import { useAuthStore } from '../stores';
@@ -57,10 +53,13 @@ export function NoteInput({ incidentId }) {
 
       <div
         className={clsx(
-          'border-2 rounded transition-colors',
+          'border rounded-lg overflow-hidden transition-colors',
           focusedUsers.length > 0 && 'ring-2'
         )}
-        style={{ ringColor: focusedUsers[0]?.color }}
+        style={{
+          borderColor: 'var(--border-primary)',
+          ringColor: focusedUsers[0]?.color
+        }}
       >
         <textarea
           value={text}
@@ -68,24 +67,21 @@ export function NoteInput({ incidentId }) {
           onFocus={onFocus}
           onBlur={onBlur}
           placeholder="Add observations, logs, or findings..."
-          className="w-full p-3 rounded resize-none focus:outline-none"
+          className="w-full p-3 bg-tertiary text-primary resize-none focus:outline-none"
+          style={{ backgroundColor: 'var(--bg-tertiary)' }}
           rows={3}
           maxLength={2000}
           disabled={isSubmitting}
         />
 
-        <div className="flex justify-between items-center px-3 py-2 bg-gray-50 border-t">
-          <span className="text-xs text-gray-500">
+        <div className="flex justify-between items-center px-3 py-2 border-t" style={{ backgroundColor: 'var(--bg-tertiary)', borderColor: 'var(--border-primary)' }}>
+          <span className="text-xs text-muted">
             {text.length}/2000 characters
           </span>
           <button
             type="submit"
             disabled={!text.trim() || isSubmitting}
-            className={clsx(
-              'px-4 py-1.5 rounded text-white text-sm font-medium',
-              'bg-blue-600 hover:bg-blue-700',
-              'disabled:bg-gray-300 disabled:cursor-not-allowed'
-            )}
+            className="btn btn--primary btn--sm"
           >
             {isSubmitting ? 'Adding...' : 'Add Note'}
           </button>

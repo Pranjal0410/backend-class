@@ -1,13 +1,6 @@
 /**
  * ActionItemList Component
- * Role-aware action items display and management
- *
- * GRACEFUL DEGRADATION:
- * - Viewers see action items but cannot:
- *   - Add new items
- *   - Toggle completion
- * - Checkboxes are disabled for viewers
- * - "Add" button is hidden for viewers
+ * Role-aware action items display and management - Dark theme
  */
 import { useState } from 'react';
 import { useAuthStore, useIncidentStore } from '../stores';
@@ -37,10 +30,10 @@ export function ActionItemList({ incidentId }) {
 
   return (
     <div className="action-item-list">
-      <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+      <h3 className="text-lg font-semibold text-primary mb-3 flex items-center gap-2">
         Action Items
         {!canWrite && (
-          <span className="text-xs text-gray-500 font-normal">(read only)</span>
+          <span className="text-xs text-muted font-normal">(read only)</span>
         )}
       </h3>
 
@@ -62,18 +55,19 @@ export function ActionItemList({ incidentId }) {
       {/* Action items list */}
       <ul className="space-y-2 mb-4">
         {actionItems.length === 0 ? (
-          <li className="text-gray-500 text-sm bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300">
-            <p className="font-medium text-gray-600 mb-1">No action items defined</p>
-            <p className="text-gray-400">Create tasks to track remediation steps and follow-ups.</p>
+          <li className="empty-state">
+            <p className="empty-state__title">No action items defined</p>
+            <p className="empty-state__description">Create tasks to track remediation steps and follow-ups.</p>
           </li>
         ) : (
           actionItems.map((item) => (
             <li
               key={item._id}
               className={clsx(
-                'flex items-start gap-3 p-2 rounded',
-                item.content.completed && 'bg-gray-50'
+                'flex items-start gap-3 p-2 rounded-lg transition-colors',
+                item.content.completed && 'bg-tertiary'
               )}
+              style={{ backgroundColor: item.content.completed ? 'var(--bg-tertiary)' : 'transparent' }}
             >
               <input
                 type="checkbox"
@@ -81,19 +75,21 @@ export function ActionItemList({ incidentId }) {
                 onChange={() => handleToggle(item._id, item.content.completed)}
                 disabled={!canWrite}
                 className={clsx(
-                  'mt-1 h-4 w-4 rounded',
+                  'mt-1 h-4 w-4 rounded accent-accent',
                   canWrite ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'
                 )}
+                style={{ accentColor: 'var(--accent-primary)' }}
               />
               <div className="flex-1">
                 <p
                   className={clsx(
-                    item.content.completed && 'line-through text-gray-500'
+                    'text-primary',
+                    item.content.completed && 'line-through text-muted'
                   )}
                 >
                   {item.content.text}
                 </p>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-muted mt-1">
                   Added by {item.userId?.name || 'Unknown'}
                 </p>
               </div>
@@ -112,16 +108,12 @@ export function ActionItemList({ incidentId }) {
             onFocus={onFocus}
             onBlur={onBlur}
             placeholder="Add a remediation task or follow-up..."
-            className="flex-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="input flex-1"
           />
           <button
             type="submit"
             disabled={!newItemText.trim()}
-            className={clsx(
-              'px-4 py-2 rounded text-white font-medium',
-              'bg-blue-600 hover:bg-blue-700',
-              'disabled:bg-gray-300 disabled:cursor-not-allowed'
-            )}
+            className="btn btn--primary"
           >
             Add
           </button>

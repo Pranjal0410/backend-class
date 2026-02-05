@@ -1,9 +1,6 @@
 /**
  * AssignResponder Component
- * Admin-only control to assign responders to incidents
- *
- * RBAC: Only visible to admins
- * Server-authoritative: Waits for socket confirmation before updating UI
+ * Admin-only control to assign responders to incidents - Dark theme
  */
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../stores';
@@ -23,13 +20,11 @@ export function AssignResponder({ incidentId, currentAssignees = [] }) {
   // Check if current user can assign (admin only)
   const canAssign = user && canPerformAction(user.role, 'incident.assign');
 
-  // Fetch available users on mount (responders and admins can be assigned)
+  // Fetch available users on mount
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        // Fetch all users, not just responders
         const { users } = await userApi.list({});
-        // Filter to only show responders and admins (not viewers)
         const assignableUsers = users.filter(u => u.role === 'responder' || u.role === 'admin');
         setResponders(assignableUsers);
       } catch (error) {
@@ -57,7 +52,6 @@ export function AssignResponder({ incidentId, currentAssignees = [] }) {
     setIsLoading(true);
     assignUser(incidentId, selectedUserId);
 
-    // Reset after sending (UI will update from socket event)
     setTimeout(() => {
       setSelectedUserId('');
       setIsLoading(false);
@@ -65,10 +59,10 @@ export function AssignResponder({ incidentId, currentAssignees = [] }) {
   };
 
   return (
-    <div className="mt-4 pt-4 border-t">
-      <label className="block text-sm font-medium text-gray-600 mb-2">
+    <div className="mt-4 pt-4 border-t" style={{ borderColor: 'var(--border-primary)' }}>
+      <label className="label flex items-center gap-2">
         Assign Responder
-        <span className="ml-2 text-xs text-gray-400" title="Only administrators can assign responders">
+        <span className="text-xs text-muted" title="Only administrators can assign responders">
           (Admin only)
         </span>
       </label>
@@ -78,7 +72,7 @@ export function AssignResponder({ incidentId, currentAssignees = [] }) {
           value={selectedUserId}
           onChange={(e) => setSelectedUserId(e.target.value)}
           disabled={!isConnected || isLoading || availableResponders.length === 0}
-          className="flex-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+          className="select flex-1"
         >
           <option value="">
             {availableResponders.length === 0
@@ -95,14 +89,14 @@ export function AssignResponder({ incidentId, currentAssignees = [] }) {
         <button
           onClick={handleAssign}
           disabled={!selectedUserId || !isConnected || isLoading}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          className="btn btn--primary"
         >
           {isLoading ? 'Assigning...' : 'Assign'}
         </button>
       </div>
 
       {!isConnected && (
-        <p className="mt-2 text-xs text-amber-600">
+        <p className="mt-2 text-xs text-yellow-500">
           Waiting for server connection...
         </p>
       )}

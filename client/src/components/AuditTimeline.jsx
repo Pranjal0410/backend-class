@@ -1,17 +1,6 @@
 /**
  * AuditTimeline Component
- * Renders immutable, chronological audit trail
- *
- * WHY AUDITABILITY MATTERS (Interview answer):
- * "In incident response, the timeline is critical for post-incident reviews.
- * You need to know what happened, when, and by whom. That's why updates are
- * structured and immutable - not free-form chat messages."
- *
- * This is NOT a chat system because:
- * - Updates are typed (status_change, note, assignment, action_item)
- * - Each update has structured content
- * - Updates are immutable (no editing/deleting)
- * - Used for compliance and learning, not conversation
+ * Renders immutable, chronological audit trail - Dark theme
  */
 
 const UPDATE_ICONS = {
@@ -31,9 +20,9 @@ const UPDATE_COLORS = {
 export function AuditTimeline({ updates, grouped = false }) {
   if (!updates || updates.length === 0) {
     return (
-      <div className="text-gray-500 text-sm bg-gray-50 p-6 rounded-lg border border-dashed border-gray-300 text-center">
-        <p className="font-medium text-gray-600 mb-1">No timeline events yet</p>
-        <p className="text-gray-400">All status changes, notes, and assignments will appear here.</p>
+      <div className="empty-state">
+        <p className="empty-state__title">No timeline events yet</p>
+        <p className="empty-state__description">All status changes, notes, and assignments will appear here.</p>
       </div>
     );
   }
@@ -69,7 +58,7 @@ export function AuditTimeline({ updates, grouped = false }) {
 
           return (
             <div key={type} className="mb-6">
-              <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+              <h4 className="text-sm font-semibold text-muted uppercase tracking-wider mb-3 flex items-center gap-2">
                 <span
                   className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: UPDATE_COLORS[type] }}
@@ -118,11 +107,11 @@ function TimelineEntry({ update, compact = false }) {
   if (compact) {
     return (
       <div className="flex items-start gap-3 text-sm">
-        <div className="text-gray-400 w-16 flex-shrink-0">{time}</div>
+        <div className="text-muted w-16 flex-shrink-0">{time}</div>
         <div className="flex-1">
-          <span className="font-medium text-gray-700">{userName}</span>
-          <span className="text-gray-500 mx-1">—</span>
-          <span className="text-gray-600">{message}</span>
+          <span className="font-medium text-primary">{userName}</span>
+          <span className="text-muted mx-1">—</span>
+          <span className="text-secondary">{message}</span>
         </div>
       </div>
     );
@@ -132,8 +121,8 @@ function TimelineEntry({ update, compact = false }) {
     <div className="flex gap-4">
       {/* Timestamp */}
       <div className="flex-shrink-0 w-20 text-right">
-        <div className="text-sm font-medium text-gray-700">{time}</div>
-        <div className="text-xs text-gray-400">{date}</div>
+        <div className="text-sm font-medium text-primary">{time}</div>
+        <div className="text-xs text-muted">{date}</div>
       </div>
 
       {/* Icon & Line */}
@@ -144,13 +133,13 @@ function TimelineEntry({ update, compact = false }) {
         >
           {icon}
         </div>
-        <div className="w-0.5 flex-1 bg-gray-200 mt-2" />
+        <div className="w-0.5 flex-1 mt-2" style={{ backgroundColor: 'var(--border-primary)' }} />
       </div>
 
       {/* Content */}
       <div className="flex-1 pb-4">
-        <div className="font-medium text-gray-900">{userName}</div>
-        <div className="text-gray-600 mt-1">{message}</div>
+        <div className="font-medium text-primary">{userName}</div>
+        <div className="text-secondary mt-1">{message}</div>
       </div>
     </div>
   );
@@ -177,7 +166,7 @@ function formatUpdateMessage(update) {
     case 'note':
       return (
         <span>
-          Added note: <em>"{update.content.text}"</em>
+          Added note: <em className="text-muted">"{update.content.text}"</em>
         </span>
       );
 
@@ -186,7 +175,7 @@ function formatUpdateMessage(update) {
       const target = update.content.targetUser?.name || 'a user';
       return (
         <span>
-          {action} <strong>{target}</strong> to this incident
+          {action} <strong className="text-accent">{target}</strong> to this incident
         </span>
       );
 
@@ -196,13 +185,13 @@ function formatUpdateMessage(update) {
         return (
           <span>
             {status === 'completed' ? 'Completed' : 'Added'} action item:{' '}
-            <em>"{update.content.text}"</em>
+            <em className="text-muted">"{update.content.text}"</em>
           </span>
         );
       }
       return (
         <span>
-          Added action item: <em>"{update.content.text}"</em>
+          Added action item: <em className="text-muted">"{update.content.text}"</em>
         </span>
       );
 

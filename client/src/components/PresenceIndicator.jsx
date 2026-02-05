@@ -1,49 +1,80 @@
 /**
  * PresenceIndicator Component
- * Shows who is currently viewing the incident
- *
- * Displays:
- * - Avatar circles with user initials
- * - User's assigned color
- * - Tooltip with full name on hover
+ * Shows who is currently viewing the incident - Dark theme
  */
 import { usePresenceStore, useAuthStore } from '../stores';
 
 export function PresenceIndicator({ incidentId }) {
   const users = usePresenceStore((state) => state.getIncidentUsers(incidentId));
-  const currentUserId = useAuthStore((state) => state.user?._id);
+  const currentUser = useAuthStore((state) => state.user);
+  const currentUserId = currentUser?._id;
 
-  // Filter out current user (they know they're here)
+  // Filter out current user for "others" display
   const otherUsers = users.filter((u) => u.userId !== currentUserId);
 
-  if (otherUsers.length === 0) {
-    return (
-      <div className="presence-indicator text-sm text-gray-500">
-        Only you are viewing this incident
-      </div>
-    );
-  }
+  // Total viewers count (including current user)
+  const totalViewers = users.length > 0 ? users.length : 1;
 
   return (
-    <div className="presence-indicator flex items-center gap-2">
-      <span className="text-sm text-gray-600">Also viewing:</span>
-      <div className="flex -space-x-2">
-        {otherUsers.slice(0, 5).map((user) => (
-          <div
-            key={user.userId}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium border-2 border-white cursor-default"
-            style={{ backgroundColor: user.color }}
-            title={user.name}
-          >
-            {getInitials(user.name)}
-          </div>
-        ))}
-        {otherUsers.length > 5 && (
-          <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-400 text-white text-xs font-medium border-2 border-white">
-            +{otherUsers.length - 5}
-          </div>
-        )}
+    <div className="presence-indicator flex items-center gap-4">
+      {/* Viewer count */}
+      <div className="flex items-center gap-2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-secondary">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+        <span className="text-sm text-secondary">
+          {totalViewers} {totalViewers === 1 ? 'viewer' : 'viewers'}
+        </span>
       </div>
+
+      {/* Current user */}
+      <div className="flex items-center gap-2">
+        <div
+          className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-medium"
+          style={{ backgroundColor: 'var(--accent-primary)' }}
+          title={`${currentUser?.name} (you)`}
+        >
+          {getInitials(currentUser?.name)}
+        </div>
+        <span className="text-sm text-primary">You</span>
+      </div>
+
+      {/* Other users */}
+      {otherUsers.length > 0 && (
+        <>
+          <div className="h-4 w-px" style={{ backgroundColor: 'var(--border-primary)' }}></div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-secondary">Also viewing:</span>
+            <div className="flex -space-x-2">
+              {otherUsers.slice(0, 5).map((user) => (
+                <div
+                  key={user.userId}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-medium border-2"
+                  style={{
+                    backgroundColor: user.color,
+                    borderColor: 'var(--bg-secondary)'
+                  }}
+                  title={user.name}
+                >
+                  {getInitials(user.name)}
+                </div>
+              ))}
+              {otherUsers.length > 5 && (
+                <div
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-medium border-2"
+                  style={{
+                    backgroundColor: 'var(--bg-tertiary)',
+                    borderColor: 'var(--bg-secondary)'
+                  }}
+                >
+                  +{otherUsers.length - 5}
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
